@@ -1,0 +1,1 @@
+REFRESH MATERIALIZED VIEW ${collection}_view_${index}_${lang}

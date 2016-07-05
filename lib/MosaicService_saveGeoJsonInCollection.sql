@@ -1,0 +1,1 @@
+SELECT insert_geojson('${collection}', '${data}'::jsonb)
