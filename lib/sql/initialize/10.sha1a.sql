@@ -1,0 +1,3 @@
+CREATE OR REPLACE FUNCTION sha1a(str text) RETURNS BYTEA AS $$
+    SELECT digest(str, 'sha1') as hash;
+$$ LANGUAGE SQL STRICT IMMUTABLE

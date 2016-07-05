@@ -5,4 +5,4 @@ SELECT
     geometry AS geometry
 FROM ${collection}
 ) AS T
-${order}
+ORDER BY ${order} id
