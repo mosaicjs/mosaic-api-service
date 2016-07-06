@@ -1,8 +1,8 @@
 SELECT * FROM (
 SELECT
-    id AS id,
+    id AS _id,
     ${projection}
     geometry AS geometry
 FROM ${collection}
 ) AS T
-ORDER BY ${order} id
+ORDER BY ${order} _id
