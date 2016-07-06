@@ -1,6 +1,6 @@
 {
   "name": "mosaic-api-service",
-  "version":"0.0.0",
+  "version": "0.0.1",
   "description": "A rest API giving remote access to MosaicService entities",
   "main": "index.js",
   "scripts": {
@@ -25,7 +25,7 @@
   },
   "dependencies": {
     "mosaic-mapnik": "^0.3.21",
-    "pg": "^6.0.1" 
+    "pg": "^6.0.1"
   },
   "homepage": "https://github.com/mosaicjs/mosaic-api-service#readme",
   "directories": {
