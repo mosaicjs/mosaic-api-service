@@ -1,0 +1,1 @@
+DROP TYPE IF EXISTS json_result_rec CASCADE
