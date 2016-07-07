@@ -1,0 +1,1 @@
+SELECT drop_json_index('${collection}', '${index}', '${lang}')

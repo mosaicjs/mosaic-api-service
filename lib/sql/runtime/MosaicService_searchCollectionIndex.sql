@@ -1,5 +1,7 @@
 SELECT A.id AS id, jsonb_build_object( 'id', B.id, 'type', 'Feature', 'properties', B.properties, 'geometry', B.geometry)::jsonb AS feature FROM
 (
+    SELECT * FROM search_json_index('${collection}', '${indexes}'::jsonb, '${lang}', '${query}'::jsonb)
+
     SELECT I.*
     FROM ${collection}_view_${index}_${lang} AS I
     WHERE I.document @@ to_tsquery('${query}')
