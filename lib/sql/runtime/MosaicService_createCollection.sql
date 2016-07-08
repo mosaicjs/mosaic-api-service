@@ -1,1 +1,1 @@
-SELECT create_geojson('${collection}')
+SELECT create_geojson('${collection}', '${lang}')

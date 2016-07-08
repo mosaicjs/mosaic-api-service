@@ -34,8 +34,8 @@ CREATE OR REPLACE FUNCTION search_json_index(tbl text, lang text, intersection b
     return plv8.execute(sql);
     
     function getSqlLine(idxName, query){
-        var viewName = tbl + '_view_' + idxName + '_' + lang;
-        var sql = 'SELECT id AS id FROM ' + viewName;
+        var ftsViewName = 'fts_' + tbl + '_' + lang + '_' + idxName;
+        var sql = 'SELECT id AS id FROM ' + ftsViewName;
         if (query) {
             sql += " WHERE document @@ to_tsquery('" + query + "')"; 
         }

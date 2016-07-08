@@ -13,6 +13,11 @@ RETURNS tsvector AS $$
     }
     var result = expandValues(values);   
     var str = result.join(' ').replace(/[\"\']/gim, ' ');
+
+    lang = lang || 'default';
+    if (lang === 'default'){
+        lang = 'simple'; 
+    }
     str = "'" + str + "'";
     var vectors = plv8.execute("SELECT to_tsvector('" + lang + "'::regconfig," + str + ") as vec" );
     return vectors.map(function(v){ 

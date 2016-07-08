@@ -8,6 +8,6 @@ SELECT B.* FROM
         id AS _id,
         ${projection}
         geometry AS geometry
-    FROM ${collection}
+    FROM collection_${collection}_${lang}
 ) AS B ON A.id = B._id
 ORDER BY ${order} _id

@@ -4,6 +4,6 @@ SELECT A.id AS id, jsonb_build_object( 'id', B.id, 'type', 'Feature', 'propertie
         SELECT search_json_index('${collection}', '${lang}', ${intersection}, '${query}'::jsonb) AS rec
     ) AS T
 ) AS A LEFT JOIN (
-    SELECT id, properties, ST_AsGeoJson(geometry)::jsonb AS geometry FROM ${collection}
+    SELECT id, properties, ST_AsGeoJson(geometry)::jsonb AS geometry FROM collection_${collection}_${lang}
 ) AS B ON A.id = B.id
 ORDER BY id

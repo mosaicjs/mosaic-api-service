@@ -1,1 +1,1 @@
-SELECT drop_geojson('${collection}')
+SELECT drop_geojson('${collection}', '${lang}')
