@@ -1,9 +1,8 @@
 SELECT B.* FROM 
 (
-    SELECT I.*
-    FROM ${collection}_view_${index}_${locale} AS I
-    WHERE I.document @@ to_tsquery('${query}')
-    ORDER BY ts_rank(I.document, to_tsquery('${query}')) DESC
+    SELECT (rec).pos, (rec).id as id  FROM (
+        SELECT search_json_index('${collection}', '${lang}', ${intersection}, '${query}'::jsonb) AS rec
+    ) AS T
 ) AS A LEFT JOIN (
     SELECT
         id AS _id,

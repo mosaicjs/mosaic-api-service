@@ -22,8 +22,10 @@ CREATE OR REPLACE FUNCTION search_json_index(tbl text, lang text, intersection b
         sql = 'SELECT T0.id FROM ' + sql; 
         sql = 'SELECT ROW_NUMBER() OVER (ORDER BY id) AS pos, id FROM (' + sql + ') AS B';
     } else {
+
         // "OR" logic
         sql = array.join(' UNION ALL ');
+        // FIXME: add GROUP BY id here and order everything by the number of results (?) 
         sql = 'SELECT ROW_NUMBER() OVER (ORDER BY id) AS pos, id FROM (' +
           ' SELECT distinct(id) AS id FROM (' + sql + ') AS A) AS B';
     }
@@ -33,7 +35,10 @@ CREATE OR REPLACE FUNCTION search_json_index(tbl text, lang text, intersection b
     
     function getSqlLine(idxName, query){
         var viewName = tbl + '_view_' + idxName + '_' + lang;
-        return 'SELECT id AS id FROM ' + viewName + ' ' + 
-        "WHERE document @@ to_tsquery('" + query + "')";
+        var sql = 'SELECT id AS id FROM ' + viewName;
+        if (query) {
+            sql += " WHERE document @@ to_tsquery('" + query + "')"; 
+        }
+        return sql;
     }
 $$ LANGUAGE plv8 STRICT IMMUTABLE
