@@ -25,7 +25,8 @@
   },
   "dependencies": {
     "mosaic-mapnik": "^0.3.22",
-    "pg": "^6.0.1"
+    "pg": "^6.0.1",
+    "uuid": "^2.0.2"
   },
   "homepage": "https://github.com/mosaicjs/mosaic-api-service#readme",
   "directories": {

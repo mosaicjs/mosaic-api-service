@@ -1,1 +1,1 @@
-SELECT insert_geojson('${collection}', '${lang}, ''${data}'::jsonb)
+SELECT insert_geojson('${collection}', '${lang}', '${data}'::jsonb)
