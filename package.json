@@ -24,7 +24,7 @@
     "mocha": "^2.4.5"
   },
   "dependencies": {
-    "mosaic-mapnik": "^0.3.21",
+    "mosaic-mapnik": "^0.3.22",
     "pg": "^6.0.1"
   },
   "homepage": "https://github.com/mosaicjs/mosaic-api-service#readme",
