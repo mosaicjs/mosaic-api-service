@@ -19,7 +19,8 @@ RETURNS tsvector AS $$
         lang = 'simple'; 
     }
     str = "'" + str + "'";
-    var vectors = plv8.execute("SELECT to_tsvector('" + lang + "'::regconfig,unaccent(" + str + ")) as vec" );
+    str = "unaccent(" + str + ") || ' ' || " + str;
+    var vectors = plv8.execute("SELECT to_tsvector('" + lang + "'::regconfig," + str + ") as vec" );
     return vectors.map(function(v){ 
         return v.vec;
     })
