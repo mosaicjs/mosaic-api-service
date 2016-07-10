@@ -1,51 +1,43 @@
-CREATE OR REPLACE FUNCTION get_geojson_stats(t varchar(255), lang varchar(255), options jsonb) RETURNS jsonb AS $$
-    // { field : 'properties.address.city', name : 'city' }
-    // { field : 'properties.address.building', name : 'building', type : 'string' }
-    // { field : 'properties.info.tags', name : 'tag', type : 'string', array: true }
+CREATE OR REPLACE FUNCTION get_geojson_stats(tbl text, fields jsonb) RETURNS jsonb AS $$
+    // { "fields" : { "city": "properties.address.city" } }
+    // { "fields" : { "building": { "field" : "properties.address.building", "type" : "string" } } }
+    // { "fields" : { "tags": { "field" : "properties.info.tags", "type" : "string", "array" : true } } }
 
-    lang = lang || 'default';
-    var viewName = 'collection_' + t + '_' + lang;
-    var collectionName = viewName + '_json';
-
-    var fields = options.fields || [];
-    var maxSize = options.maxSize || 1000;
+    var json_field_selector = plv8.find_function('json_field_selector');
+    
+    var maxSize = fields.$maxSize || 1000;
+    delete fields.$maxSize;
     var queries = [];
-    Object.keys(fields).forEach(function(info, i){
-        var array = info.field.split('.');
-        var f = array[0];
-        if (array.length > 1) {
-            f = f + '->' + array.slice(1).map(function(n) {
-                return "'" + n + "'";
-            }).join('->');
+    var fieldsInfo = [];
+    Object.keys(fields).forEach(function(name, i){
+        var info = fields[name];
+        if (typeof info === 'string') {
+            info = {
+                field : info
+            };
         }
-        f = '(' + f + ')';
-        if (info.array) {
-            f = 'jsonb_array_elements' + f;
-        }
-        f += ' AS val ';
-        
-        var p = '(val)';
-        if (info.type === 'boolean') {
-            p = 'to_boolean((val)::jsonb)';
-        } else if (info.type === 'string'){
-            p = "to_string((val)::jsonb)";
-        }
-        var query = 'SELECT ' + p + ' AS value, count(val) AS count FROM ' + 
-            '(SELECT ' + f + ' FROM ' + collectionName + ') AS T '+
+        info.name = info.name || name;
+        fieldsInfo.push(info);
+
+        var x = json_field_selector(info);
+        var f = x.field + ' AS val ';
+        var p = x.select;
+
+        var sql = 'SELECT ' + p + ' AS value, count(val) AS count FROM ' + 
+            '(SELECT ' + f + ' FROM ' + tbl + ') AS T '+
             'GROUP BY val ORDER BY count DESC, value ' +
             'LIMIT ' + maxSize;
-        queries.push(query);
+        // plv8.elog(NOTICE, sql);
+        queries.push(sql);
     });
 
     var stats = {};
     queries.forEach(function(query, i){
-        var info = fields[i];
+        var info = fieldsInfo[i];
+        var s = stats[info.name] = {};
         var results = plv8.execute(query);
         results.forEach(function(res){
-            stats[info.name] = {
-                value : res.value,
-                count : res.count
-            };
+            s[res.value] = res.count;
         })
     });
     return stats;

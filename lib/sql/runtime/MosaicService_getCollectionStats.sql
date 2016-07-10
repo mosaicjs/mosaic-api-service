@@ -1,0 +1,1 @@
+SELECT get_geojson_collection_stats('${collection}', '${lang}', '${fields}'::jsonb) AS stats

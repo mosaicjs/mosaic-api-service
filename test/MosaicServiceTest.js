@@ -82,8 +82,8 @@ describe('MosaicService', function() {
                 params : params,
                 query : {
                     fields : {
-                        name : 1,
-                        description : 1
+                        'properties.name' : 1,
+                        'properties.description' : 1
                     }
                 }
             }).then(function(res) {
@@ -125,8 +125,8 @@ describe('MosaicService', function() {
                 params : params,
                 query : {
                     fields : {
-                        name : 1,
-                        description : 1
+                        'properties.name' : 1,
+                        'properties.description' : 1
                     }
                 }
             });
@@ -214,8 +214,8 @@ describe('MosaicService', function() {
                 },
                 query : { // http query
                     fields : {
-                        'name' : 1,
-                        'description' : 1
+                        'properties.name' : 1,
+                        'properties.description' : 1
                     }
                 }
             })
@@ -229,7 +229,7 @@ describe('MosaicService', function() {
                 },
                 query : { // http query
                     fields : {
-                        'category' : 1
+                        'properties.category' : 1
                     }
                 }
             })
@@ -313,6 +313,54 @@ describe('MosaicService', function() {
             });
         });
     });
+
+    runTest('should return statistics for collection', function(service) {
+        var params = {
+            collection : collection,
+            lang : lang
+        };
+        return sequence([ function() {
+            // Create collection
+            return service.createCollection({
+                params : params
+            });
+        }, function() {
+            // Set data
+            return service.setCollectionData({
+                params : params,
+                data : data.features
+            })
+        } ]).then(function() {
+            return service.getCollectionStats({
+                params : params,
+                query : {
+                    fields : {
+                        'category' : 'properties.category',
+                        'city' : 'properties.city'
+                    }
+                }
+            }).then(function(res) {
+                expect(res.code).to.be(200);
+                expect(res.data.collection).to.eql(collection);
+                expect(res.data.lang).to.eql(lang);
+                expect(res.data.stats).to.eql({
+                    "city" : {
+                        "Paris" : 86
+                    },
+                    "category" : {
+                        "Autre" : 28,
+                        "Peinture" : 19,
+                        "Sciences" : 8,
+                        "Architecture" : 3,
+                        "Archéologie" : 3,
+                        "Objets d'art" : 16,
+                        "Photographie" : 1,
+                        "Art contemporain" : 8
+                    }
+                })
+            });
+        });
+    });
 });
 
 function test(msg, action) {
@@ -344,11 +392,10 @@ function runTest(msg, action) {
                     return withConnector(service, function() {
                         return action(service);
                     });
-                }).then(drop, function(err) {
-                    return drop().then(function() {
-                        throw err;
-                    });
-                });
+                })/*
+                     * .then(drop, function(err) { return drop().then(function() {
+                     * throw err; }); })
+                     */;
                 function create() {
                     return Promise.resolve().then(function() {
                         return w.execSql('CREATE DATABASE ' //
