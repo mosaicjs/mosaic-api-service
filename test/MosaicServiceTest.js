@@ -5,6 +5,7 @@ var config = require('./config');
 var data = require('./data.json');
 
 describe('MosaicService', function() {
+    this.timeout(5000);
     var collection = 'toto';
     var lang = 'french';
     var params = {
