@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION search_json_index(tbl text, lang text, intersection boolean, queries jsonb) RETURNS SETOF json_result_rec AS $$
+CREATE OR REPLACE FUNCTION search_json_index_sql(tbl text, lang text, intersection boolean, queries jsonb) RETURNS text AS $$
     var array = [];
     Object.keys(queries).forEach(function(idxName, i){
         var line = getSqlLine(idxName, queries[idxName]);
@@ -6,9 +6,10 @@ CREATE OR REPLACE FUNCTION search_json_index(tbl text, lang text, intersection b
         array.push(line);
     });
 
-        // "AND" logic
     var sql; 
     if (intersection) {
+    
+        // "AND" logic
         var where = [];
         sql = array.map(function(line, i){
             if (i > 0) {
@@ -31,7 +32,7 @@ CREATE OR REPLACE FUNCTION search_json_index(tbl text, lang text, intersection b
     }
     // plv8.elog(NOTICE, sql);
     
-    return plv8.execute(sql);
+    return sql;
     
     function getSqlLine(idxName, query){
         var ftsViewName = 'fts_' + tbl + '_' + lang + '_' + idxName;

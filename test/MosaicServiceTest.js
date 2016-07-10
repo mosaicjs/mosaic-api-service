@@ -145,6 +145,7 @@ describe('MosaicService', function() {
                 expect(res.code).to.be(200);
                 expect(res.data.collection).to.eql(collection);
                 expect(res.data.lang).to.eql(lang);
+                expect(res.data.size).to.eql(0);
             });
         }).then(function() {
             // Update index
@@ -163,6 +164,7 @@ describe('MosaicService', function() {
                 expect(res.code).to.be(200);
                 expect(res.data.collection).to.eql(collection);
                 expect(res.data.lang).to.eql(lang);
+                expect(res.data.size).to.eql(4);
                 expect(res.data.features.map(function(f) {
                     return f.properties.id;
                 })).to.eql([ 'palais-de-la-decouverte',//
@@ -245,6 +247,7 @@ describe('MosaicService', function() {
                 expect(res.code).to.be(200);
                 expect(res.data.collection).to.eql(collection);
                 expect(res.data.lang).to.eql(lang);
+                expect(res.data.size).to.eql(25);
                 expect(res.data.features.map(function(f) {
                     return f.properties.id;
                 })).to.eql([//
@@ -294,6 +297,7 @@ describe('MosaicService', function() {
                 expect(res.code).to.be(200);
                 expect(res.data.collection).to.eql(collection);
                 expect(res.data.lang).to.eql(lang);
+                expect(res.data.size).to.eql(7);
                 expect(res.data.features.map(function(f) {
                     return f.properties.id;
                 })).to.eql([//
