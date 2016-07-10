@@ -1,7 +1,7 @@
 SELECT B.* FROM 
 (
     SELECT (rec).pos, (rec).id as id  FROM (
-        SELECT search_json_index('${collection}', '${lang}', ${intersection}, '${query}'::jsonb) AS rec
+        SELECT search_json_index('${collection}', '${lang}', '${query}'::jsonb) AS rec
     ) AS T
 ) AS A LEFT JOIN (
     SELECT

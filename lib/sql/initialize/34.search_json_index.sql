@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION search_json_index_sql(tbl text, lang text, intersection boolean, queries jsonb) RETURNS text AS $$
+CREATE OR REPLACE FUNCTION search_json_index_sql(tbl text, lang text, queries jsonb) RETURNS text AS $$
     var array = [];
     Object.keys(queries).forEach(function(idxName, i){
         var line = getSqlLine(idxName, queries[idxName]);
@@ -6,6 +6,8 @@ CREATE OR REPLACE FUNCTION search_json_index_sql(tbl text, lang text, intersecti
         array.push(line);
     });
 
+    var intersection = queries.$intersection !== false;
+    delete queries.$intersection;
     var sql; 
     if (intersection) {
     
