@@ -18,8 +18,8 @@ RETURNS tsvector AS $$
     if (lang === 'default'){
         lang = 'simple'; 
     }
-    str = "'" + str + "'";
-    str = "unaccent(" + str + ") || ' ' || " + str;
+    str = "' " + str + "'";
+    str = "unaccent(" + str + ") || " + str;
     var vectors = plv8.execute("SELECT to_tsvector('" + lang + "'::regconfig," + str + ") as vec" );
     return vectors.map(function(v){ 
         return v.vec;

@@ -8,7 +8,7 @@ var env = process.env;
 // }
 
 module.exports = {
-    testDbName : 'testDbOne',
+    testDbName : 'test_db_one',
     db : {
         "host" : "127.0.0.1",
         "port" : 65432, // 5432,
