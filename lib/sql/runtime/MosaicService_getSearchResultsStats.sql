@@ -1,0 +1,1 @@
+SELECT get_search_results_stats('${collection}', '${lang}', '${query}'::jsonb, '${fields}'::jsonb) AS stats

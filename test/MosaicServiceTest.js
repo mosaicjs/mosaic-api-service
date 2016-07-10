@@ -361,6 +361,72 @@ describe('MosaicService', function() {
             });
         });
     });
+
+    runTest('should return statistics for search results', function(service) {
+        var params = {
+            collection : collection,
+            lang : lang
+        };
+        return sequence([ function() {
+            // Create collection
+            return service.createCollection({
+                params : params
+            });
+        }, function() {
+            // Set data
+            return service.setCollectionData({
+                params : params,
+                data : data.features
+            })
+        }, function() {
+            // Create index by name and description
+            return service.createCollectionIndex({
+                params : {
+                    collection : collection,
+                    lang : lang,
+                    index : 'q'
+                },
+                query : { // http query
+                    fields : {
+                        'properties.name' : 1,
+                        'properties.description' : 1
+                    }
+                }
+            })
+        } ]).then(function() {
+            return service.getCollectionSearchStats({
+                params : params,
+                // Find distribution of national museums
+                // by cities and categories
+                query : {
+                    query : {
+                        'q' : 'national:*'
+                    },
+                    fields : {
+                        'category' : 'properties.category',
+                        'city' : 'properties.city'
+                    }
+                }
+            }).then(function(res) {
+                expect(res.code).to.be(200);
+                expect(res.data.collection).to.eql(collection);
+                expect(res.data.lang).to.eql(lang);
+                expect(res.data.stats).to.eql({
+                    "city" : {
+                        "Paris" : 25
+                    },
+                    "category" : {
+                        "Autre" : 8,
+                        "Peinture" : 7,
+                        "Sciences" : 3,
+                        "Archéologie" : 1,
+                        "Objets d'art" : 4,
+                        "Art contemporain" : 2
+                    }
+                })
+            });
+        });
+    });
 });
 
 function test(msg, action) {
