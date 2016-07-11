@@ -1,6 +1,6 @@
 {
   "name": "mosaic-api-service",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "A rest API giving remote access to MosaicService entities",
   "main": "index.js",
   "scripts": {
