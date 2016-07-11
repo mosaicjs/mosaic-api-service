@@ -8,16 +8,16 @@ CREATE OR REPLACE FUNCTION insert_geojson(t varchar(255), lang varchar(255), lis
         list = !!list ? [list] : [];
     }
     var jsonPlan = plv8.prepare(
-        'INSERT INTO ' + collectionName + '(id, properties) VALUES ($1, to_json($2)) ' +
-        'ON CONFLICT(id) DO UPDATE SET (properties) = (to_json($2))',
+        'INSERT INTO ' + collectionName + '(id, properties) VALUES ($1, $2) ' +
+        'ON CONFLICT(id) DO UPDATE SET (properties) = ($2)',
         ['uuid', 'jsonb']
     );
     try {
         var geometryPlan = plv8.prepare(
             'INSERT INTO ' + geometryName + '(id, geometry) ' + 
-               'VALUES ($1, ST_SetSRID(ST_GeomFromGeoJSON($2),4326)) ' +
-               'ON CONFLICT(id) DO UPDATE SET (geometry) = (ST_SetSRID(ST_GeomFromGeoJSON($2),4326))',
-            ['uuid', 'text']
+               'VALUES ($1, ST_SetSRID(ST_GeomFromGeoJSON($2::text),4326)) ' +
+               'ON CONFLICT(id) DO UPDATE SET (geometry) = (ST_SetSRID(ST_GeomFromGeoJSON($2::text),4326))',
+            ['uuid', 'jsonb']
         );
         try {
              list.forEach(function(obj){
@@ -26,7 +26,7 @@ CREATE OR REPLACE FUNCTION insert_geojson(t varchar(255), lang varchar(255), lis
                 var properties = obj.properties || {};
                 jsonPlan.execute([id, properties]);
                 if (obj.geometry){
-                    geometryPlan.execute([id, JSON.stringify(obj.geometry)]);
+                    geometryPlan.execute([id, obj.geometry]);
                 }
              });
         } finally {
