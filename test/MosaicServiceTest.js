@@ -62,6 +62,25 @@ describe('MosaicService', function() {
             });
         });
     });
+    runTest('should be able to store duplicate data in a collection', function(service) {
+        return service.createCollection({
+            params : params
+        }).then(function(res) {
+            var features = [].concat(data.features);
+            data.features.forEach(function(f){
+                features.push(JSON.parse(JSON.stringify(f)));
+            })
+            return service.setCollectionData({
+                params : params,
+                data : features
+            }).then(function(res) {
+                expect(res.code).to.be(200);
+                expect(res.data.collection).to.eql(collection);
+                expect(res.data.lang).to.eql(lang);
+                expect(res.data.size).to.eql(data.features.length);
+            });
+        });
+    });
 
     runTest('should be able to store twice the same data in a collection ',
             function(service) {

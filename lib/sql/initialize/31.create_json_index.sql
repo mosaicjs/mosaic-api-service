@@ -20,7 +20,9 @@ CREATE OR REPLACE FUNCTION create_json_index(tbl text, name text, lang text, fie
         fieldsInfo.push(info);
 
         var x = json_field_selector(info);
-        queries.push("to_string(" + x.field + ",',')::text");
+        var expr = "to_string(" + x.field + ",',')::text";
+        expr = "COALESCE(" + expr + ",'')"
+        queries.push(expr);
     });    
     
     var sql = 'SELECT id, (' + queries.join('||') + ') AS txt FROM ' + collectionName;   
