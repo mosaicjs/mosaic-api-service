@@ -7,7 +7,14 @@ CREATE OR REPLACE FUNCTION to_string(o jsonb, c text) RETURNS text AS $$
 	       o.forEach(function(child){
 	           toString(child, result);
 	       });
-	    } else if (o) {
+	    } else if (typeof o === 'object') {
+	       Object.keys(o).forEach(function(key){
+	          var val = toString(o[key])
+	          if (val){
+                result.push(val);
+	          }
+	       })
+	    } else if (o) {
 	        result.push(o + '');
 	    } else {
 	        result.push('');

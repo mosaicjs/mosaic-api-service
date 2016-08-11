@@ -20,8 +20,8 @@ CREATE OR REPLACE FUNCTION create_json_index(tbl text, name text, lang text, fie
         fieldsInfo.push(info);
 
         var x = json_field_selector(info);
-        var expr = "to_string(" + x.field + ",',')::text";
-        expr = "COALESCE(" + expr + ",'')"
+        var expr = "COALESCE(" + x.field + ",'{}'::jsonb)";
+        expr = "to_string(" + expr + ",',')::text";
         queries.push(expr);
     });    
     
